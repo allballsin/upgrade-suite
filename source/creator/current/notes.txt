@@ -1,0 +1,84 @@
+NOTES FOR UPGRADE CREATOR ( FORMALLY TRANSMITTER)
+=================================================
+
+Create New Error: 257
+
+19/6/98
+- change filename to include path. This will allow same name directories in
+	project.
+
+
+3/6/98
+- Possible use as collaborative tool?
+- MD5's for files , and ownloc should be written to PDF on compilation.
+
+2/6/98
+- App names cannot include ;'s
+
+1/6/98
+- Compressed files do not patch well?
+- talk about clearing out the staging area.
+- make help very hyperlinked.
+- add ! < to documentation. 
+
+13/5/98
+- url should just be a file name in Receiving
+schemas.
+- for HTTP, FTP retrieval, base URL should be in Project
+Definition file unless overridden by URL of file.
+
+30/5/98
+- if a hint is cut off short, resize the Creator Window so the hint
+box is larger.
+- ZIP.DLL must ship with creator
+- UNZIP.DLL must ship with receiver
+- when compiling, check if patch exists even if file in Staging
+Area is the same as the file in the Source Directory.
+- Can't have two copies of the same file in an installation.
+- if you delete files out of your source directory, reimport
+the directory? Even though this will stuff up your URL's ,
+you can't delete the files from the object structure.
+
+28/5/98
+- it is IMPORTANT to not have directories called Windows and
+System in your Source Directory other than ones to deliberately
+use System and Windows directories.
+
+
+27/5/98
+
+- files cannot contain a '
+- if you are like me, tooltips drive you nuts, so I have
+implemented hint boxes. Tell me what you think of them.
+
+OLD
+
+DONE The programmer probably wants settings to be separate to his/hew own receiver settings.
+
+make sure an application has a root directory.
+
+USER CONSIDERATIONS
+- Programmers cannot use folders called root,system, or windows
+- Currently assume subdirectories will not be put into Windows or System
+  directories, because the folder search function does not look for them.
+- Can't have two directories with same name in application ( even if they are
+  in different subdirectories )
+- assume Root, Windows and System are all different folders
+- need the downloader installed to test
+- patch directory name is reserved
+- htmltest directory name is reserved
+
+TTD
+- make application file view editable
+- allow multiple register instructions and shortcuts available to each new file.
+- make it easier to change the name of a file
+- change default location for webserver in loadsettings for release.
+- an Updater program that works like the Receiver for Transmitting the files?
+  only useful if on the web all the time. It could be called by the Transmitter.
+- applications need upload information files, used by transmitter, created/edited by Creator
+- Easy step by step wizards
+- a word on security
+- old patch files need to be deleted from ftp site, or new file
+  will not be downloaded.
+- compress whole files that get uploaded
+

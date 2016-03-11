@@ -1,0 +1,29 @@
+[DSP upload]
+Filename=fngb1401
+Replacements=
+Version=1.00
+FileURL=
+Description=Fnugry RASNotify is a simple component that can be used to  notify your application when RAS connection becomes  available or  lost. It also allows developer to easily enumerate  all RAS connections, query connection name, device or  status.
+Delphi 1.0=N
+Delphi 2.0=N
+Delphi 3.0=Y
+C++Builder 1.0=N
+File Status=Freeware
+Full Source=Included
+Category=InVisible Components
+Note=
+Additional info=
+
+[DSP Support]
+DSP Support=N
+
+[Versions available]
+Delphi 1.0=
+Delphi 2.0=
+Delphi 3.0=
+C++Builder 1.0=
+
+[Uploader]
+Author name=Gleb Yourchenko
+Author E-mail=eip__@hotmail.com
+Author URL=C:\WINDOWS\SYSTEMS\BLANK.HTM

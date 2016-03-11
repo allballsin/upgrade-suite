@@ -1,0 +1,12 @@
+-2000ÿ729561ÿ64040920ÿ68733ÿ0ÿ
+-1999ÿ1902ÿ13226ÿ3476ÿ0ÿ
+-1998ÿ54464ÿ77691ÿ60549ÿ125622ÿ
+546ÿ0ÿ0ÿ0ÿ0ÿ0ÿÿ
+852ÿ16384ÿ0ÿ0ÿ0ÿ0ÿÿMaybe leave this in.
+183ÿ16384ÿ54ÿ0ÿ0ÿ0ÿÿnecessary?
+839ÿ16384ÿ0ÿ0ÿ0ÿ0ÿÿIs this necessary or might it create problems for network installations of receiver?
+3010ÿ8192ÿ0ÿ0ÿ0ÿ0ÿÿmust happen after loadsettings
+2546ÿ16384ÿ0ÿ0ÿ0ÿ0ÿÿnewap.compile(recstagepath,false maybe should be true? );
+930ÿ16384ÿ0ÿ0ÿ0ÿ0ÿÿmay need to be true
+2057ÿ8192ÿ0ÿ0ÿ0ÿ0ÿÿmake sure when you delete a redeployment, the redeploy gets removed from the parent recapp
+1684ÿ0ÿ0ÿ0ÿ0ÿ0ÿÿ

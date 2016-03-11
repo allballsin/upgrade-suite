@@ -1,0 +1,59 @@
+package USD5;
+
+{$R *.RES}
+{$R 'ATShell.dcr'}
+{$R 'ILOCK332.dcr'}
+{$R 'ShellLnk.dcr'}
+{$R 'Appexec.dcr'}
+{$R 'DialUp.dcr'}
+{$R 'Exfile.dcr'}
+{$R 'TimeOut.dcr'}
+{$R 'TBNArea.dcr'}
+{$R 'ZLIBArchive.dcr'}
+{$R 'MMJRasConnect.dcr'}
+{$ALIGN ON}
+{$ASSERTIONS ON}
+{$BOOLEVAL ON}
+{$DEBUGINFO ON}
+{$EXTENDEDSYNTAX ON}
+{$IMPORTEDDATA ON}
+{$IOCHECKS ON}
+{$LOCALSYMBOLS ON}
+{$LONGSTRINGS ON}
+{$OPENSTRINGS ON}
+{$OPTIMIZATION ON}
+{$OVERFLOWCHECKS OFF}
+{$RANGECHECKS OFF}
+{$REFERENCEINFO ON}
+{$SAFEDIVIDE ON}
+{$STACKFRAMES OFF}
+{$TYPEDADDRESS OFF}
+{$VARSTRINGCHECKS OFF}
+{$WRITEABLECONST OFF}
+{$MINENUMSIZE 1}
+{$IMAGEBASE $400000}
+{$DESCRIPTION 'Upgrade Suite Delphi 5 Components'}
+{$IMPLICITBUILD OFF}
+
+requires
+  vcl50,
+  Vclx50;
+
+contains
+  ATShell in 'ATShell.pas',
+  iLock332 in 'ILOCK332.PAS',
+  pmupgrade in 'pmupgrade.pas',
+  ShellLnk in 'ShellLnk.pas',
+  GoToWeb in 'GoToWeb.pas',
+  appexec in 'Appexec.pas',
+  DialUp in 'DialUp.pas',
+  ExFile in 'Exfile.pas',
+  FngRASNotify in 'FngRASNotify.pas',
+  TimeOut in 'TimeOut.pas',
+  TBNArea in 'TBNArea.pas',
+  ZLIBArchive in 'ZLIBArchive.pas',
+  Md5b in 'Md5b.pas',
+  PBFolderDialog in 'PBFolderDialog.pas',
+  MMJRasConnect in 'MMJRasConnect.pas';
+
+end.

@@ -1,0 +1,15 @@
+NOTES ON TRANSMITTER
+====================
+
+Next Error: 1
+
+This program will run in the background, so any changes to
+files in the application list will be updated every
+time period or on demand.
+
+Need to be able to read application files
+
+TTD
+===
+
+Remove comments around single instance checking in project source file.

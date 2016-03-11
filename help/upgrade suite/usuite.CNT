@@ -1,0 +1,65 @@
+:Base  usuite.HLP
+:Title PC Blues Upgrade Suite
+1 Introduction=Introduction
+1 Important!=Important
+1 Terminology=Terminology
+1 Requirements=Requirements
+1 Features=Features
+1 Installation=Installation
+1 Uninstalling Upgrade Suite=Uninstalling Upgrade Suite
+1 Security=Security
+1 Software License=Software License
+1 Glossary=Glossary
+1 Quick Start
+2 Introduction=Quick Start
+2 Getting Ready=Getting Ready
+2 Creating a Project=Creating a Project
+2 A Local/Network Deployment=A Local/Network Deployment
+2 An Internet Deployment=An Internet Deployment
+2 Preparing the Project=Preparing the Project
+2 Deploying the Project=Deploying the Project
+2 Publishing a Link to the Project=Publishing a Link to the Project
+2 Getting Upgrade Suite Client Ready for the Quick Start Lesson=Getting Upgrade Suite Client Ready for the Quick Start Lesson
+2 Using the Upgrade Suite Client to Install the Project=Using the Upgrade Suite Client to Install the Project
+1 Upgrade Suite Client Manual
+2 Introduction=Upgrade Suite Client Manual
+2 User Interface=User Interface
+2 Configuring Upgrade Suite Client=Configuring Upgrade Suite Client
+2 Registering a Project=Registering a Project
+2 Installing a Project=Installing a Project
+2 Restoring Overwritten System Files=Restoring Overwritten System Files
+2 Backing Up a Project=Backing Up a Project
+2 Upgrading a Project=Upgrading a Project
+2 Uninstalling a Project=Uninstalling a Project
+2 Completely Removing a Project=Completely Removing a Project
+2 Refreshing a Redeployment=Refreshing a Redeployment
+1 Upgrade Suite Server Manual [Server Only]
+2 Introduction=Upgrade Suite Server Manual [Server Only]
+2 User Interface=User Interface
+2 Project Planning Considerations=Project Planning Considerations
+2 Creating and Editing a Project=Creating and Editing a Project
+2 Adding and Editing Project Folders=Adding and Editing Project Folders
+2 Adding and Editing Project Files=Adding and Editing Project Files
+2 Preparing a Project=Preparing a Project
+2 Testing a Project=Testing a Project
+2 Deploying a Project=Deploying a Project
+2 Managing the Deployment of Files=Managing the Deployment of Files
+2 Publishing Project Links=Publishing Project Links
+2 Pulling Down a Project=Pulling Down a Project
+1 Upgrade Suite Transmitter Manual
+2 Manual=Upgrade Suite Transmitter Manual
+1 Upgrade Suite Distribution Manager Manual [Server Only]
+2 Manual=Upgrade Suite Distribution Manager Manual [Server Only]
+1 Reference
+2 Upgrade Suite Client=Upgrade Suite Client
+2 Upgrade Suite Server [Server Only]=Upgrade Suite Server [Server Only]
+2 Upgrade Suite Transmitter=Upgrade Suite Transmitter
+2 Upgrade Suite Distribution Manager [Server Only]=Upgrade Suite Distribution Manager [Server Only]
+2 Client Preferences=Client Preferences
+2 Internet Settings=Internet Settings
+2 Transmitter Settings=Transmitter Settings
+2 File Saver=File Saver
+2 The Log Screen=The Log Screen
+2 Project Wizard [Server Only]=Project Wizard
+2 File Wizard [Server Only]=File Wizard
+2 Folder Wizard [Server Only]=Folder Wizard

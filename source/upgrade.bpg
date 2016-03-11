@@ -1,0 +1,39 @@
+#------------------------------------------------------------------------------
+VERSION = BWS.01
+#------------------------------------------------------------------------------
+!ifndef ROOT
+ROOT = $(MAKEDIR)\..
+!endif
+#------------------------------------------------------------------------------
+MAKE = $(ROOT)\bin\make.exe -$(MAKEFLAGS) -f$**
+DCC = $(ROOT)\bin\dcc32.exe $**
+BRCC = $(ROOT)\bin\brcc32.exe $**
+#------------------------------------------------------------------------------
+PROJECTS = svr4apps.exe cli4apps.exe xmt4apps.exe usdstmgr.exe usclient.exe \
+  uswebsvr.exe ustrnsmt.exe
+#------------------------------------------------------------------------------
+default: $(PROJECTS)
+#------------------------------------------------------------------------------
+
+xmt4apps.exe: EXES\CURRENT\xmt4apps.dpr
+  $(DCC)
+
+svr4apps.exe: EXES\CURRENT\svr4apps.dpr
+  $(DCC)
+
+usdstmgr.exe: EXES\CURRENT\usdstmgr.dpr
+  $(DCC)
+
+cli4apps.exe: EXES\CURRENT\cli4apps.dpr
+  $(DCC)
+
+usclient.exe: EXES\CURRENT\usclient.dpr
+  $(DCC)
+
+uswebsvr.exe: EXES\CURRENT\uswebsvr.dpr
+  $(DCC)
+
+ustrnsmt.exe: EXES\CURRENT\ustrnsmt.dpr
+  $(DCC)
+
+

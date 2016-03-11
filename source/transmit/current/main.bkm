@@ -1,0 +1,7 @@
+-2000ÿ729561ÿ64040320ÿ20182ÿ0ÿ
+-1999ÿ555ÿ2132ÿ980ÿ0ÿ
+-1998ÿ10734ÿ25727ÿ11599ÿ28371ÿ
+569ÿ8192ÿ29ÿ0ÿ0ÿ0ÿÿonly pulls down what it thinks has been uploaded i.e. don't edit a project file's directory structure before you want to pull down a remote site.
+513ÿ8192ÿ0ÿ0ÿ0ÿ0ÿÿviewfm.m1.lines.Add('Uploading '+ts+' --> '+deploypath+curapp.fname);
+555ÿ8192ÿ0ÿ0ÿ0ÿ0ÿÿviewfm.m1.lines.adD('Removing file '+deploypath+flist[cnt]);
+645ÿ0ÿ0ÿ0ÿ0ÿ0ÿÿ

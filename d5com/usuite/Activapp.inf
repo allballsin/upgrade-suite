@@ -1,0 +1,29 @@
+[DSP upload]
+Filename=ActivApp.Zip
+Replacements=
+Version=1.0
+FileURL=
+Description=Component that allows you to launch any application. Also  allows switching between any active delphi apps that have the  component installed, if app is not active, component will  automatically lauch app.
+Delphi 1.0=Y
+Delphi 2.0=Y
+Delphi 3.0=Y
+C++Builder 1.0=N
+File Status=Freeware
+Full Source=Included
+Category=InVisible Components
+Note=
+Additional info=
+
+[DSP Support]
+DSP Support=Y
+
+[Versions available]
+Delphi 1.0=
+Delphi 2.0=
+Delphi 3.0=
+C++Builder 1.0=
+
+[Uploader]
+Author name=Edward de la Rey
+Author E-mail=edwardr@mailbox.ru.ac.za
+Author URL=

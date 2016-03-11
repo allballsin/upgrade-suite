@@ -1,0 +1,42 @@
+NOTES FOR RECEIVER
+=================
+Current Error: 220
+
+8/6/98
+- only use curapp for installcheck and install purposes.
+- therefore can only be installing one app at a time!!!
+- file saver saves deleted files in fsavepath
+- deleting a file removes it from the queue automatically.
+
+
+6/6/98
+- if a new PDF arrives, use it, but keep the registry
+	information.
+
+5/6/98
+- redeployment dependencies? must be done manually.
+
+4/6/98
+- make sure the if lv1 is pointing to the right lv object.
+- maybe have special message for dependency handling
+
+OLD
+
+Use this code for making a new directory when the application'
+file already exists in the apps directory
+
+{ create file. If exists put in subdirectories numbered }
+dircount:=0;
+while fileexists(locpath+fn) then
+  begin
+  inc(dircount);
+  locpath:=locpath+chr(dircount)+'\';
+  end;
+
+Download graphic should link to a page with mirror sites
+for the Upgrade Receiver to be downloaded.
+
+Upgrade manager (shareware) should come with the downloader,
+but is not necessary to install the program. Just to update
+and remove it.
+

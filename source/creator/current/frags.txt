@@ -1,0 +1,1099 @@
+Stuff in install that I don't want revert to see:
+
+  checkinstall(projpath);
+  if (inststatus=isInstalled) and (verstatus=vsUptodate) then
+  	begin
+    prevver:=instver;
+    instver:=latver;
+    if revertingnow=true  then
+      begin
+      if (inststatus=isInstalled) then
+        begin
+        ShowMessage('Project Reversion complete.');
+        acceptfile(projpath+id,true);
+        end
+      else
+        begin
+        ShowMessage('Project Reversion unsuccessful.');
+        end;
+
+      revertingnow:=false;
+      end
+    else
+      begin
+  	  showmessagE(tempap.name+' installation complete.');
+      { offer to show readme }
+      viewreadme;
+      end;
+    { check for automirror }
+    if automirror then
+      begin
+      if ((oldverstatus=vsnewveravail) or (oldverstatus=vsUnknown)) and (verstatus=vsUptodate) then
+        begin
+        if redeploy<>'' then
+          begin
+          if tempap.loadfromfile(s.rdpath+redeploy) then
+            begin
+            tempap.redeploy;
+            end;
+          end;
+        end;
+      end;
+    end
+  else
+  	begin
+    if (inststatus=isInstalled) and (verstatus<>vsUptodate) then
+      begin
+      if rebootnow=true then
+        begin
+        ShowMessage('You must reboot your computer to complete this Installation.');
+        result:=true;
+        rebootnow:=false;
+        end
+      else
+        begin
+        ShowMessage('Installation complete, but Upgrade Receiver detects one of the Project''s files is out of date. Contact the Project provider.');
+        result:=true;
+        end;
+      end
+    else
+      begin
+      showmessagE(tempap.name+' installation unsuccessful.');
+      result:=false;
+      end;
+    end;
+  createupdatefile;
+
+
+For showing a compilation result:
+
+if result then
+  showmessagE('Project Compilation Successful.')
+else
+  ShowMessage('Project Compilation Failed.');
+
+
+From compilrec in ap.pas:
+
+  tp2:='';
+  tempfold:=curf;
+  while tempfold<>nil do
+    begin
+    ts8:=foldtosname(tempfold.name);
+    if ts8='Root' then
+      begin
+      tp2:='\'+tp2;
+      end
+    else if ts8='Windows' then
+      begin
+      tp2:=ts8+'\'+tp2;
+      end
+    else if ts8='System' then
+      begin
+      tp2:=ts8+'\'+tp2;
+      end
+    else
+	    tp2:=ts8+'\'+tp2;
+    tempfold:=tempfold.parent;
+    end;
+  tempf:=tapfile(curf.apfiles[c2]);
+  { location of file in bucket directory }
+  if tp2='\' then
+  	tp2:='';
+  { bit funny about this }
+  { need to know if it is a deploy or a redeploy }
+  if (stagepath<>s.stagepath) then
+  	begin
+	  ts:=makedpath(bucketdir)+tp2+tempf.name
+  	end
+  else
+	  ts:=tempf.name; // now full source filename's are stored.
+  if not fileexists(ts) then
+  	begin
+  	showmessage('Error 45. File '+ts+' does not exists. Path Error.');
+    end
+  else
+  	begin
+    ts7:=filemd5digest(ts);
+    ts2:=curpath+tempf.url;
+    { check if next subdir contains file, if so, check next, etc.}
+    { prepare tp }
+    tp:='';
+    for cnt:=2 to ugdepth do
+      tp:=tp+'pcbold\';
+    { flag if there is going to be a new version of a file}
+    newverflag:=false;
+    if fileexists(curpath+tempf.url) then
+      ts6:=filemd5digest(curpath+tempf.url)
+    else
+      ts6:=ts7; // to prevent a new version being made
+  //  if (ts7<>ts6) or ({patch doesn't exists}fileexists(tsc+ts6)=false) then
+    if ts7<>ts6 then
+      newverflag:=true;
+    for cnt:=1 to ugdepth do
+      begin
+      ts3:=curpath+tp+tempf.url;
+      if fileexists(ts3) then
+        begin
+        ts6:=filemd5digest(ts3);
+        if (ts6)<>(ts7) then
+          begin
+          { if new version to be copied }
+          if newverflag then
+            begin
+            {  copy file down one pcbold directory }
+            forcedirectories(curpath+tp+'pcbold');
+            ts4:=curpath+tp+'pcbold\'+tempf.url;
+            copyfile(pchar(ts3), pchar(ts4),false);
+            { get patch file name }
+            { make patch in appdir\patch dir}
+            mainfm.pm1.oldfile:=ts3;
+            mainfm.pm1.newfile:=ts;
+            mainfm.pm1.PatchFile:=tsc+ts6;
+            mainfm.pm1.makepatch;
+            viewfm.m1.lines.Add(ts+' patched.');
+            end;
+          end;
+        end;
+      tp:=copy(tp,1,length(tp)-7);
+      end;
+
+    { check for fail condition }
+    if not fileexists(ts) then
+      showmessage('Error 32. File does not exist in Source Directory.');
+    { if fileexists(ts2) then
+      showmessage('Error 33. Target for bucket file exists.');}
+
+    { copy latest bucket file to staging area }
+    { zip if necessary }
+    { ts is bucket file }
+    { ts2 is latest file }
+    if fileexists(ts2) then
+      begin
+      ts6:=filemd5digest(ts);
+      ts7:=filemd5digest(ts2);
+      if ts6<>ts7 then
+        begin
+        res:=copyfile(pchar(ts),pchar(ts2),false);
+        { remove from deploylist }
+        if (deploylist.IndexOf(ts2)<>-1) then
+        	deploylist.Delete(deploylist.indexof(ts2));
+        if res=false then
+          showmessagE('Error 52. Could not copy file.');
+        viewfm.m1.lines.Add(ts+' --> '+ts2);
+	      tempf.md5:=filemd5digest(ts2);
+        end;
+      end
+    else
+      begin
+      res:=copyfile(pchar(ts),pchar(ts2),false);
+      { remove from deploylist }
+      if deploylist.IndexOf(ts2)<>-1 then
+        deploylist.Delete(deploylist.indexof(ts2));
+      if res=false then
+        showmessagE('Error 51. Could not copy file.');
+      viewfm.m1.lines.Add(ts+' --> '+ts2);
+      tempf.md5:=filemd5digest(ts2);
+      end;
+    end;
+  end;
+
+
+
+
+This is the stuff for installing a file from pcbuc main.pas:
+
+  { this is where you install each file }
+  { start variations based on download type for this file }
+  { location of file in destination directory }
+  ts7:='';
+  getnewfile:=false;
+  ts:=tp3+tempf.name; // latest file install location
+  ts5:=tp2+tempf.name; //workarea file name
+  ts6:=ts5+'.new'; // new file to install
+  { Create directory in workarea if necessary }
+  if not directoryexists(extractfilepath(ts6)) then
+    forcedirectories(extractfilepath(ts6));
+  ts3:='';
+  ts8:=tp2+'temp'; // for http purposes
+
+  if fileexists(ts) then
+    begin
+    ts7:=filemd5digest(ts);
+    ts2:=tempap.baseurl+tempap.remdir+'patch\'+ts7; // remote patch file
+    ts3:=s.wkpath+tempap.appdir+'\patch\'+ts7; // patch workarea target file
+    end
+  else
+    begin
+    getnewfile:=true;
+    end;
+
+  { USE THIS FOR INDIVIDUAL FILE CONSTRUCTION }
+  { determine type of file transfer for each file? }
+  dltypefile:=getdltype(tempf.URL);
+ 	dltypebase:=getdltype(tempap.baseurl);
+	if (dltypefile=-1) and (dltypebase=-1) then
+   	showmessage('Error 135. Cannot determine type of file download.');
+
+  if dltypefile=-1 then
+  	dltype:=dltypebase
+  else
+  	dltype:=dltypefile;
+  case dltype of
+    0:  begin // http
+        { this changes depending on download type }
+        if dltypefile=-1 then
+        	begin
+        	{ determine path of remote files - tp1 }
+          tp1:='';
+          tempfold:=curf;
+          finished:=false;
+          while not finished do
+            begin
+            tp1:=tempap.foldtosname(tempfold.name)+'/'+tp1;
+            if tempfold.parent<>nil then
+              tempfold:=tempfold.parent
+            else
+              finished:=true;
+            end;
+            tp1:=makewpath(tempap.baseurl)+tp1;
+  	      ts4:=tp1+filefromURL(tempf.URL); // remote file name
+	        end
+        else
+        	begin
+          { tempf.url is a full pathname/url }
+					ts4:=tempf.url;
+          end;
+        if getnewfile=true then
+          begin
+          { get new file to working area}
+          httpfilerec:=false;
+          if mainfm.HTTP1.Busy then
+            mainfm.HTTP1.Cancel;
+          { copy data into ts6 }
+          httperror:=false;
+          httpfilerec:=false;
+          httptimeout:=false;
+          mainfm.HTTP1.GetDoc(ts4, a,ts8);
+          while not (httpfilerec or httperror or httptimeout) do
+            application.processmessages;
+          end
+        else
+          begin
+          {check if file is latest version }
+					if ts7=tempf.md5 then
+            begin
+            { latest file installed }
+            end
+          else
+            begin
+            { installed file is old version }
+            { if patch doesn't exist, get new file }
+            httperror:=false;
+            httpfilerec:=false;
+            httptimeout:=false;
+            mainfm.HTTP1.GetDoc(ts2, a,ts3);
+            while not (httpfilerec or httperror or httptimeout) do
+               application.processmessages;
+             if not fileexists(ts2) then
+               begin
+               { get new file and copy to working area }
+               httperror:=false;
+               httpfilerec:=false;
+               httptimeout:=false;
+               mainfm.HTTP1.GetDoc(ts4, a,ts6);
+               while not (httpfilerec or httperror or httptimeout) do
+                 application.processmessages;
+               getnewfile:=true;
+               end
+             else
+               begin
+               { get patch }
+               { patch is already in workarea }
+               { copy latest file to workarea }
+               res:=copyfile(pchar(ts),pchar(ts5),false);
+               { and apply in working area to create file.new }
+               mainfm.pm1.oldfile:=ts5;
+               deletefile(pchar(ts6));
+               mainfm.pm1.newfile:=ts6;
+               mainfm.pm1.PatchFile:=ts3;
+               mainfm.pm1.applypatch;
+               getnewfile:=true;
+               end;
+             end;
+           end
+        end;
+    1:  begin // ftp
+        { this changes depending on download type }
+        { determine path of remote files - tp1 }
+        if dltypefile=-1 then
+        	begin
+          tp1:='';
+          tempfold:=curf;
+          finished:=false;
+          while not finished do
+            begin
+            tp1:=tempap.foldtosname(tempfold.name)+'/'+tp1;
+            if tempfold.parent<>nil then
+              tempfold:=tempfold.parent
+            else
+              finished:=true;
+            end;
+          tp1:=makewpath(tempap.baseurl)+tp1;
+          ts4:=tp1+filefromURL(tempf.URL); // remote file name
+          end
+        else
+        	ts4:=tempf.url;
+        { if not connected then connect }
+        if mainfm.ftp1.state<>5 then
+           begin
+           mainfm.ftp1.RemotePort := 21;
+           mainfm.ftp1.RemoteHost := getserverfromurl(tempap.baseurl);
+           mainfm.ftp1.Blocking := True;
+           mainfm.ftp1.UserId:=tempap.username;
+           mainfm.ftp1.Password:=tempap.password;
+           ftperror:=false;
+           ftptimeout:=false;
+           mainfm.ftp1.Connect('','');
+           while (not mainfm.ftp1.state=5) and (not (ftperror or ftptimeout)) do
+                 application.processmessages;
+           end;
+        if getnewfile=true then
+          begin
+          { get new file to working area}
+          ftperror:=false;
+          ftptimeout:=false;
+          ftpfilerec:=false;
+          mainfm.ftp1.GetFile(ts4,ts6);
+          while not (ftperror or ftptimeout or ftpfilerec) do
+           application.ProcessMessages;
+          end
+        else
+          begin
+          {check if file is latest version }
+					if ts7=tempf.md5 then
+            begin
+            { latest file installed }
+            end
+          else
+            begin
+            { installed file is old version }
+            { if patch doesn't exist, get new file }
+            ftperror:=false;
+            ftptimeout:=false;
+            ftpfilerec:=false;
+            mainfm.ftp1.GetFile(ts2,ts3);
+            while not (ftperror or ftptimeout or ftpfilerec) do
+             application.ProcessMessages;
+            if not ftperror then
+              begin
+              { get new file and copy to working area }
+              ftperror:=false;
+              ftptimeout:=false;
+              ftpfilerec:=false;
+              mainfm.ftp1.GetFile(ts4,ts6);
+              while not (ftperror or ftptimeout or ftpfilerec) do
+               application.ProcessMessages;
+              getnewfile:=true;
+              end
+            else
+              begin
+              { get patch }
+              { patch is already in workarea }
+              { copy latest file to workarea }
+              res:=copyfile(pchar(ts),pchar(ts5),false);
+              { and apply in working area to create file.new }
+              mainfm.pm1.oldfile:=ts5;
+              deletefile(pchar(ts6));
+              mainfm.pm1.newfile:=ts6;
+              mainfm.pm1.PatchFile:=ts3;
+              mainfm.pm1.applypatch;
+              getnewfile:=true;
+              end;
+            end;
+          end
+        end;
+    2:  begin // local or anything else at the moment
+        { this changes depending on download type }
+        { determine path of remote files - tp1 }
+        if dltypefile=-1 then
+        	begin
+          tp1:='';
+          tempfold:=curf;
+          finished:=false;
+          while not finished do
+            begin
+            tp1:=tempap.foldtosname(tempfold.name)+'\'+tp1;
+            if tempfold.parent<>nil then
+              tempfold:=tempfold.parent
+            else
+              finished:=true;
+            end;
+          tp1:=makedpath(tempap.baseurl)+tp1;
+          ts4:=tp1+extractfilename(tempf.URL); // remote file name
+          end
+        else
+        	ts4:=tempf.url;
+        if getnewfile=true then
+          begin
+          { get new file to working area}
+          res:=copyfile(pchar(ts4),pchar(ts6),false);
+          if res=false then
+            showmessagE('Could not retrieve file: '+ts4);
+          end
+        else
+        	begin
+          {check if file is latest version }
+					if ts7=tempf.md5 then
+            begin
+            { latest file installed }
+            end
+          else
+            begin
+            { installed file is old version }
+            { if patch doesn't exist, get new file }
+            if not fileexists(ts2) then
+              begin
+              { get new file and copy to working area }
+              res:=copyfile(pchar(ts4),pchar(ts6),false);
+              if res=false then
+              	showmessagE('Could not retrieve file: '+ts4);
+              getnewfile:=true;
+              end
+            else
+              begin
+              { get patch }
+              { get patch to workarea }
+              res:=copyfile(pchar(ts2),pchar(ts3),false);
+              if res=false then
+              	showmessage('Could not retrieve file: '+ts2);
+              { copy latest file to workarea }
+              res:=copyfile(pchar(ts),pchar(ts5),false);
+              if res=false then
+              	showmessage('Could not copy file: '+ts);
+              { and apply in working area to create file.new }
+              mainfm.pm1.oldfile:=ts5;
+              deletefile(pchar(ts6));
+              mainfm.pm1.newfile:=ts6;
+              mainfm.pm1.PatchFile:=ts3;
+              mainfm.pm1.applypatch;
+              getnewfile:=true;
+              end;
+            end;
+          end
+        end
+      else
+        begin
+        showmessage('Error 101. Download type not known.');
+        end;
+    end;
+  { shift file }
+  if (getnewfile=true) and (fileexists(ts6)) then
+    begin
+    renamefile(ts6,ts6+'.dzp');
+    mainfm.zm1.FSpecArgs.clear;
+    mainfm.zm1.ZipFilename:=ts6+'.dzp';
+    mainfm.zm1.ExtrBaseDir:=extractfilepath(ts6);
+    mainfm.zm1.Extract;
+    deletefile(pchar(ts6+'.dzp'));
+    renamefile((makedpath(extractfilepath(ts6))+extractfilename(ts)),ts6);
+    if not fileexists(ts6) then
+    	begin
+      showmessagE('File "'+extractfilename(ts6)+'" does not exist. Click OK to continue.');
+      viewfm.m1.lines.add(ts+' cannot be installed. '+extractfilename(ts6)+' not found.');
+      end
+    else
+    	begin
+      res:=copyfile(pchar(ts6),pchar(ts),false);
+      if res=true then
+        begin
+        viewfm.m1.lines.add(ts+' installed.');
+        end
+      else
+        begin
+        viewfm.m1.lines.add(ts+' not installed until reboot.');
+        copyatreboot(ts6,ts,true);
+        end;
+      { make shortcut, register, etc. }
+      tempf.makeshortcut(ts);
+      { register could have problems if file can't be copied until reboot }
+      tempf.registerfile(ts);
+      end
+    end
+  else
+  	begin
+		{ could not retrieve file }
+    viewfm.m1.lines.add('Could not retrieve '+ts6);
+    end;
+  end;
+{ EnD individual file installation }
+
+
+
+end;
+
+
+function tmainfm.loaddispappdetails:boolean;
+var
+  apfile:string;
+  posn:integer;
+begin
+result:=true;
+posn:=tc1.tabindex;
+if posn<>-1 then
+  begin
+  apfile:=appflist.strings[posn];
+  result:=true;
+  curapp.Free;
+  curapp:=tap.create;
+  curapp.fname:=appath+apfile;
+  curapp.loadfromfile(appath+apfile);
+  curapp.loadserfromfile(appath+apfile+'.ser');
+  { load folders display }
+  displayfolds;
+  lv1.Items.Clear;
+  { make sure tv1.selected is not nil }
+  tv1.selected:=tv1.topitem;
+  if tv1.selected<>nil then
+    displayfiles(tv1.selected.text);
+  end;
+end;
+
+
+
+wizfm.cb2.Clear;
+wizfm.cb1.clear;
+{ if Root, Windows, or System, then put in root of tree }
+
+if wizfm.cb2.items.count>0 then
+  wizfm.cb2.itemindex:=0;
+if wizfm.cb1.items.count>0 then
+  wizfm.cb1.itemindex:=0;
+tv1.fullexpand;
+end;
+
+
+
+
+{ recursive display of folders }
+function tmainfm.dfoldsrec(curfold:tapfolder):boolean;
+var
+  cnt,cntm,posn:integer;
+  ts:string;
+  begin
+result:=true;
+ts:=curapp.foldtosname(curfold.name);
+if (ts<>curfold.name) then
+  begin
+  tv1.Items.Add(ttreenode.create(tv1.items),ts);
+  if (ts<>'Windows') and (ts<>'System') then
+    wizfm.cb2.items.Add(ts);
+  wizfm.cb1.items.add(ts);
+  end
+else
+  begin
+  { find parent? or use selected }
+  posn:=-1;
+  cnt:=0;
+  cntm:=tv1.items.count-1;
+  while (cnt<=cntm) and (posn=-1) do
+    begin
+    tv1.selected:=tv1.items[cnt];
+    ts:=tapfolder(curfold.parent).name;
+    ts:=curapp.foldtosname(ts);
+    if tv1.items[cnt].Text=ts then
+      posn:=cnt;
+    inc(cnt);
+    end;
+  { add child }
+  tv1.Items.addchild(tv1.items[posn],curfold.name);
+  wizfm.cb2.items.Add(curfold.name);
+  wizfm.cb1.items.add(curfold.name);
+  end;
+{ recurse }
+curfold.apfolds.pack;
+cntm:=curfold.apfolds.Count-1;
+for cnt:=0 to cntm do
+  dfoldsrec(curfold.apfolds[cnt]);
+end;
+
+
+
+
+{ load the fileed page of the wizfm with the currently selected file's values }
+procedure tmainfm.loadwizfilevals(foldname,filename:string);
+var
+  ts:string;
+  tempfold:tapfolder;
+  tempfile:tapfile;
+  cnt,cntm:integer;
+begin
+tempfold:=curapp.findfold(foldname);
+if tempfold=nil then
+  begin
+  showmessagE('Error 22. Could not find folder name in application.');
+  end
+else
+  begin
+  tempfile:=curapp.findfile(filename,tempfold);
+  if tempfile=nil then
+    begin
+    showmessage('Error 23. Could not find file object in folder.');
+    end
+  else
+    begin
+    { got the file, now load the values }
+    wizfm.e1.text:=tempfile.name;
+    wizfm.e2.text:=tempfile.url;
+    wizfm.e24.text:=tempfile.md5;
+    wizfm.cb1.text:=tempfold.name;
+    wizfm.cb5.text:='';
+    cntm:=tempfile.reg.count-1;
+    wizfm.lb1.clear;
+    for cnt:=0 to cntm do
+      begin
+      wizfm.lb1.items.add(tempfile.reg.strings[cnt]);
+      end;
+    cntm:=tempfile.scutloc.count-1;
+    wizfm.lb2.clear;
+    for cnt:=0 to cntm do
+      begin
+      ts:=tempfile.scutloc.strings[cnt]+';'+tempfile.scutname.strings[cnt];
+      wizfm.lb2.items.add(ts);
+      end;
+    end;
+  end;
+end;
+
+
+
+{ PUBLIC FUNCTIONS }
+procedure tmainfm.showwiz(page:integer);
+var
+	res:integer;
+  pname:string;
+  ti:integer;
+  goon:boolean;
+begin
+case page of
+  APPSVAL:  begin
+            end;
+  FOLDSVAL: begin
+  					wizfm.caption:='Folder Wizard';
+            wizfm.pc1.activepage:=wizfm.folds;
+            application.onhint:=wizfm.showhint4;
+            if tv1.selected<>nil then
+            	begin
+              oldfold:=curapp.findfold(tv1.selected.text);
+              oldparent:=oldfold.parent;
+              wizfm.cb2.text:=tv1.selected.Text;
+              end;
+            end;
+  FILESVAL: begin
+  					wizfm.caption:='File Wizard';
+            wizfm.pc1.activepage:=wizfm.files;
+            application.onhint:=wizfm.showhint3;
+            if tv1.selected<>nil then
+            	begin
+              { assume this works }
+              oldfold:=curapp.findfold(tv1.selected.text);
+              wizfm.cb1.text:=tv1.selected.text;
+              end;
+            if edfile=true then
+              begin
+              if lv1.selected<>nil then
+                loadwizfilevals(tv1.selected.Text,lv1.Selected.caption);
+              end;
+            end;
+  else
+    showmessage('Error 1. Invalid sheet selection.');
+  end;
+
+if (not edfile) or ((edfile=true) and (lv1.selected<>nil)) then
+	wizfm.showmodal;
+application.onhint:=showhint;
+case page of
+  APPSVAL:  begin
+  					{ hope curapp is left after new file created }
+            goon:=true;
+            try
+	            pname:=curapp.name;
+            except
+            	goon:=false;
+            end;
+            loaddisplayapps;
+            loaddispappdetails;
+            if goon=true then
+            	begin
+              { move tab to new app }
+              ti:=tc1.Tabs.IndexOf(pname);
+              if ti<>-1 then
+              	begin
+                tc1.tabindex:=ti;
+								tc1change(application);
+                if edproj=false then
+                  begin
+                  { offer to import files }
+                  res:=messagedlg('Do you want to Import the file structure of the Source '+
+                                  'Directory into the Project Definition File?',mtconfirmation,[mbyes,mbno],0);
+                  if res=mrYes then
+                    begin
+                    tbt18Click(application);
+                    end;
+                  end;
+                end;
+              end;
+  					edproj:=false;
+            end;
+  FOLDSVAL: begin
+            displayfolds;
+            if tv1.selected<>nil then
+              displayfiles(tv1.selected.text);
+            end;
+  FILESVAL: begin
+            if tv1.selected<>nil then
+              displayfiles(tv1.selected.text);
+            end;
+  else
+    showmessage('Error 2. Invalid sheet selection.');
+  end;
+end;
+
+
+
+function tap.savetolocalfile:boolean;
+var
+  cnt,cntm:integer;
+  cf:tapfolder;
+  ts:string;
+  serfile:textfile;
+begin
+result:=true;
+ts:=fname+'.test';
+{ force backup for now - maybe offer revert }
+copyfile(pchar(ts),pchar(ts+'.bak'),false);
+assignfile(tfile,ts);
+rewrite(tfile);
+writeln(tfile,'?'+name);
+writeln(tfile,'>'+deflocdir);
+{ Start at root folder }
+apfolds.pack;
+cntm:=apfolds.count-1;
+for cnt:=0 to cntm do
+  begin
+  cf:=apfolds[cnt];
+  stoflrec(cf);
+  end;
+closefile(tfile);
+
+{ write server file }
+ts:=ts+'.ser';
+assignfile(serfile,ts);
+rewrite(serfile);
+writeln(serfile,'1');
+{ get drive of stagepath }
+writeln(serfile,copy(stagepath,1,2));
+writeln(serfile,username);
+writeln(serfile,password);
+{ this should be checked }
+writeln(serfile,copy(stagepath+appdir,3,length(stagepath+appdir)));
+writeln(serfile,bucketdir);
+closefile(serfile);
+
+end;
+
+{ recursively write application file }
+function tap.stoflrec(curf:tapfolder):boolean;
+var
+  cnt,cntm,c2,c2m,c3,c3m:integer;
+  ts:string;
+  tempf:tapfile;
+  tp2:string;
+  tempfold:tapfolder;
+begin
+result:=true;
+ts:='|'+foldtosname(curf.name);
+if curf.parent<>nil then
+  ts:=ts+';'+foldtosname(curf.parent.name);
+writeln(tfile,ts);
+{ get list of files from fold }
+c2m:=curf.apfiles.count-1;
+for c2:=0 to c2m do
+  begin
+  tempf:=tapfile(curf.apfiles[c2]);
+  { save file information to application file }
+  writeln(tfile,'\'+tempf.name);
+  { get parent folder names }
+  tp2:='';
+  tempfold:=curf;
+  { check if tempfold is special }
+  if foldtosname(tempfold.name)<>tempfold.name then
+    tp2:=foldtosname(tempfold.name)
+  else
+    begin
+    while tempfold.parent<>nil do
+      begin
+      tp2:=tp2+'/'+tempfold.parent.name;
+      tempfold:=tempfold.parent;
+      end;
+    end;
+  writeln(tfile,'/'+copy(fname,1,length(fname)-4)+'\'+tp2+'\'+tempf.name);
+  c3m:=tempf.reg.Count-1;
+  for c3:=0 to c3m do
+    begin
+    writeln(tfile,':'+tempf.reg.strings[c3]);
+    end;
+  c3m:=tempf.scutname.count-1;
+  for c3:=0 to c3m do
+    begin
+    writeln(tfile,'*'+tempf.scutloc.strings[c3]+';'+tempf.scutname.strings[c3]);
+    end;
+  end;
+curf.apfolds.pack;
+cntm:=curf.apfolds.count-1;
+for cnt:=0 to cntm do
+  begin
+  stofrec(curf.apfolds[cnt]);
+  end;
+end;
+
+
+procedure twizfm.editfile;
+var
+  tempfile:tapfile;
+  tfind:integer;
+  tempfold:tapfolder;
+  cnt:integer;
+  t2,t3:string;
+begin
+tempfold:=curapp.findfold(cb1.text);
+if tempfold=nil then
+  begin
+  end
+else
+  begin
+  { check if parent folder has changed }
+  { find file in folder }
+  tempfile:=curapp.findfile(e1.text,tempfold);
+  if tempfile<>nil then
+    begin
+    { clear node's information }
+    tempfile.scutname.Clear;
+    tempfile.scutloc.Clear;
+    tempfile.reg.Clear;
+    end
+  else
+  	begin
+  	tempfile:=tapfile.create;
+	  tfind:=tempfold.apfiles.Add(tempfile);
+    end;
+  { insert new information }
+  tempfile.name:=e1.text;
+  tempfile.URL:=e2.text;
+  for cnt:=0 to lb1.items.count-1 do
+    tempfile.reg.add(lb1.Items[cnt]);
+  for cnt:=0 to lb2.items.count-1 do
+    begin
+    t2:=lb2.items[cnt];
+    t3:=copy(t2,1,pos(';',t2)-1);
+    delete(t2,1,pos(';',t2));
+    tempfile.scutloc.add(t3);
+    tempfile.scutname.add(t2);
+    end;
+  curapp.savetofile;
+  end;
+end;
+
+
+
+  end;
+if testnow then
+	begin
+  wizfm.e6.text:=curapp.name+' - Local Test';
+  wizfm.e8.text:=curapp.fname+'.test';
+  wizfm.e7.text:=curapp.deflocdir;
+  fdialfm.l1.Caption:='Select local folder to deploy Test Project.';
+  fdialfm.dlb1.directory:='c:\';
+  fdialfm.showmodal;
+  wizfm.e21.text:=fdialfm.dlb1.directory;
+  cntm:=curapp.parentid.count-1;
+  wizfm.lv2.items.Clear;
+  for cnt:=0 to cntm do
+  	begin
+    templi:=wizfm.lv2.Items.add;
+    templi.caption:=curapp.parentname[cnt];
+    templi.SubItems.Add(curapp.parentid[cnt]);
+    end;
+  if cocreateguid(tempguid)<>S_OK then
+  	showmessagE('Error 47. Could not generate ID for Project')
+  else
+	  wizfm.e22.text:=guidtostring(tempguid);
+  wizfm.e23.text:=curapp.version;
+  wizfm.rg1.itemindex:=1;
+  wizfm.e17.text:=extractfiledrive(wizfm.e21.text);
+  wizfm.e18.text:='';
+  wizfm.e19.text:='';
+  wizfm.e20.text:=extractfilepath(wizfm.e21.text);
+  wizfm.e25.text:=inttostr(curapp.ugdepth);
+  if curapp.zipfiles=1 then
+  	wizfm.c1.checked:=true
+  else
+  	wizfm.c1.checked:=false;
+  wizfm.e26.text:=curapp.vendwebsite;
+  wizfm.e27.text:=curapp.vendemail;
+  wizfm.cb6.clear;
+  wizfm.cb7.clear;
+  cntm:=curapp.rootfold.apfiles.count-1;
+  for cnt:=0 to cntm do
+  	begin
+    { what if rootfold is crap ? }
+    wizfm.cb6.Items.add(tapfile(curapp.rootfold.apfiles[cnt]).name);
+    wizfm.cb7.Items.add(tapfile(curapp.rootfold.apfiles[cnt]).name);
+    end;
+  wizfm.cb6.text:=curapp.runfile;
+  wizfm.cb7.text:=curapp.readmefile;
+  wizfm.e9.text:=curapp.bucketdir;
+  wizfm.addnewapp;
+  { hope curapp is left after new file created }
+  goon:=true;
+  try
+    pname:=curapp.name;
+  except
+    goon:=false;
+  end;
+  loaddisplayapps;
+  loaddispappdetails;
+  if goon=true then
+    begin
+    { move tab to new app }
+    ti:=tc1.Tabs.IndexOf(pname);
+    if ti<>-1 then
+      begin
+      tc1.tabindex:=ti;
+      tc1change(application);
+      end;
+    end;
+  edproj:=false;
+  end
+else
+	begin
+  if res<>mryes then
+    begin
+    curapp.free;
+    curapp:=tap.create;
+    { clear server values }
+    wizfm.e6.text:='';
+    wizfm.e8.text:='';
+    wizfm.e7.text:='';
+    wizfm.e21.text:='';
+    wizfm.lv2.items.clear;
+    if cocreateguid(tempguid)<>S_OK then
+      showmessagE('Error 46. Could not generate ID for Project')
+    else
+      wizfm.e22.text:=guidtostring(tempguid);
+    wizfm.e23.text:='';
+    wizfm.rg1.itemindex:=0;
+    wizfm.e17.text:='';
+    wizfm.e18.text:='';
+    wizfm.e19.text:='';
+    wizfm.e20.text:='';
+    wizfm.e25.text:='3';
+    wizfm.c1.checked:=false;
+    wizfm.e26.text:='';
+    wizfm.e27.text:='';
+    wizfm.cb6.text:='';
+    wizfm.cb6.Clear;
+    wizfm.cb7.text:='';
+    wizfm.cb7.clear;
+    wizfm.e9.text:='';
+    end
+  else
+    begin
+    wizfm.e6.text:=curapp.name;
+    wizfm.e8.text:='';
+    wizfm.e7.text:=curapp.deflocdir;
+    wizfm.e21.text:=curapp.baseurl;
+    cntm:=curapp.parentid.count-1;
+    wizfm.lv2.items.Clear;
+    for cnt:=0 to cntm do
+      begin
+      templi:=wizfm.lv2.Items.add;
+      templi.caption:=curapp.parentname[cnt];
+      templi.SubItems.Add(curapp.parentid[cnt]);
+      end;
+    if cocreateguid(tempguid)<>S_OK then
+      showmessagE('Error 47. Could not generate ID for Project')
+    else
+      wizfm.e22.text:=guidtostring(tempguid);
+    wizfm.e23.text:=curapp.version;
+    wizfm.rg1.itemindex:=curapp.transtype;
+    wizfm.e17.text:=curapp.server;
+    wizfm.e18.text:=curapp.username;
+    wizfm.e19.text:=curapp.password;
+    wizfm.e20.text:=curapp.remdir;
+    wizfm.e25.text:=inttostr(curapp.ugdepth);
+    if curapp.zipfiles=1 then
+      wizfm.c1.checked:=true
+    else
+      wizfm.c1.checked:=false;
+    wizfm.e26.text:=curapp.vendwebsite;
+    wizfm.e27.text:=curapp.vendemail;
+    wizfm.cb6.clear;
+    wizfm.cb7.clear;
+    cntm:=curapp.rootfold.apfiles.count-1;
+    for cnt:=0 to cntm do
+      begin
+      { what if rootfold is crap ? }
+      wizfm.cb6.Items.add(tapfile(curapp.rootfold.apfiles[cnt]).name);
+      wizfm.cb7.Items.add(tapfile(curapp.rootfold.apfiles[cnt]).name);
+      end;
+    wizfm.cb6.text:=curapp.runfile;
+    wizfm.cb7.text:=curapp.readmefile;
+    wizfm.e9.text:=curapp.bucketdir;
+    end;
+  showwiz(APPSVAL);
+  end;
+end;
+
+
+
+
+
+
+function tmainfm.recdirdel(pathname:string):boolean;
+var
+  cnt,cntm:integer;
+  td:string;
+begin
+result:=true;
+pathname:=makedpath(pathname);
+if directoryexists(pathname) then
+  begin
+  { delete files }
+  flb1.directory:=pathname;
+	flb1.Mask:='*.*';
+  flb1.filetype:=[ftNormal,ftReadOnly,ftArchive];
+  cntm:=flb1.Items.count-1;
+  for cnt:=cntm downto 0 do
+    deletefile(flb1.items[cnt]);
+
+  { delete subdirectories }
+  flb1.FileType:=[ftDirectory];
+  cntm:=flb1.items.count-1;
+  for cnt:= cntm downto 2 do
+  	begin
+	  flb1.FileType:=[ftDirectory];
+    flb1.directory:=pathname;
+	  td:=pathname+removesbs(flb1.items[cnt]);
+    recdirdel(td);
+    end;
+  { delete self }
+  try
+    rmdir(pathname);
+  except
+  end;
+  end;
+end;
+
+
+

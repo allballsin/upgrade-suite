@@ -1,0 +1,85 @@
+WHAT IS IT?
+===========
+
+A total solution for uploading and downloading software and data over networks, intranets, and the Internet.
+
+Three applications form the core of the Upgrade Suite:
+
+Upgrade Receiver
+- Installs and maintains distributions of software and data.
+- Automatically updates your software if you wish.
+
+Upgrade Creator
+- Generates and maintains software and data distributions.
+
+Upgrade Transmitter
+- Transmits files to and removes files from local or remote file servers.
+
+
+WHO BENEFITS?
+=============
+- Developers
+- Users
+- Network Administrators
+
+
+HOW DO DEVELOPERS BENEFIT?
+==========================
+
+Simplified software deployment (5 Steps)
+----------------------------------------
+1. Create
+- Automatically import entire directory structures into a software installation with zero effort.
+
+2. Compile
+- Automatically generate patches to bring users' software up to date. 
+
+3. Test
+- Automatically test your deployment on a local area network, or file server designated for testing.
+
+4. Deploy
+- Easily upload all files and patches to their Deployment Area, or just the files that have changed.
+
+5. Link
+- Create a Windows shortcut for users on your LAN, or generate HTML for pasting straight into a web editor.
+
+
+Total Deployment Control
+------------------------
+- Automatic patching and version control maintains an arbitrary number of software versions in the Deployment Area. 
+- Ability to remove files from remote Deployment Area. 
+
+
+HOW DO USERS BENEFIT?
+=====================
+
+Total Download Management
+-------------------------
+- Backup current software installations. 
+- Automatically upgrade software installations. 
+- Revert to previous version of software if upgrade is buggy. 
+- Uninstall software installations. 
+- Windows / System file saver in case an important DLL gets deleted. 
+- Download software through HTTP / FTP / Local Area Network 
+- Ability to download files from different servers in a single installation 
+- Ability to contact vendors right from the installer. 
+
+
+HOW DO NETWORK ADMINISTRATORS BENEFIT?
+======================================
+
+- Network Administrators can redeploy software downloaded from the
+Internet over their LAN to save internet bandwidth, and to maintain version control over their LAN software installations. 
+
+
+HOW DOES EVERYONE BENEFIT?
+==========================
+
+Bandwidth Savings 
+-----------------
+- Download only the bytes you need to bring your software up to date.
+- Files and software patches can be compressed automatically before deployment.
+
+Distribute any Data
+-------------------
+- deploy documentation, graphics, spreadsheets and databases. 

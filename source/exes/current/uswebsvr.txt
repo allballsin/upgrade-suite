@@ -1,0 +1,19 @@
+
+  DEPLOYMENT LIST AFTER POPULATION
+
+    [0]: D:\DATA\US\PRODUCTS\UPGRADE\EXES\CURRENT\staging\pdf1.upg\Root\test doc.txt
+    [1]: D:\DATA\US\PRODUCTS\UPGRADE\EXES\CURRENT\staging\pdf1.upg\Root\usclient.~dpr
+    [2]: D:\DATA\US\PRODUCTS\UPGRADE\EXES\CURRENT\staging\pdf1.upg\Root\usdstmgr.~dpr
+    [3]: D:\DATA\US\PRODUCTS\UPGRADE\EXES\CURRENT\staging\pdf1.upg\Root\ustrnsmt.~dpr
+    [4]: D:\DATA\US\PRODUCTS\UPGRADE\EXES\CURRENT\staging\pdf1.upg\Root\uswebsvr.~dpr
+    [5]: D:\DATA\US\PRODUCTS\UPGRADE\EXES\CURRENT\staging\pdf1.upg\Root\scott\Movie1.LMP
+    [6]: D:\DATA\US\PRODUCTS\UPGRADE\EXES\CURRENT\staging\pdf1.upg\Root\scott\scott.avi
+    [7]: D:\DATA\US\PRODUCTS\UPGRADE\EXES\CURRENT\staging\pdf1.upg\Root\scott\scott2.rm
+    [8]: D:\DATA\US\PRODUCTS\UPGRADE\EXES\CURRENT\staging\pdf1.upg\System\usdstmgr.~dpr
+    [9]: D:\DATA\US\PRODUCTS\UPGRADE\EXES\CURRENT\staging\pdf1.upg\System\ustrnsmt.~dpr
+    [10]: D:\DATA\US\PRODUCTS\UPGRADE\EXES\CURRENT\staging\pdf1.upg\System\uswebsvr.~dpr
+    [11]: D:\DATA\US\PRODUCTS\UPGRADE\EXES\CURRENT\staging\pdf1.upg\Windows\Journey.pgp
+
+  END DEPLOYMENT LIST
+
+
