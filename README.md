@@ -43,7 +43,7 @@ If I want other people to be able to work on the code, they can’t easily do it
 So porting it in some way is the way to go.
 
 ###Why Not Transpile?
-This seems like a great opportunity to make a transpiler from Delphi (Object Pascal) to a language that does not have a proprietary IDE or 3rd party packages. Delphi was great for me at the time, but that time is over.
+This seems like a potential future opportunity to make a transpiler from Delphi (Object Pascal) to a language that does not have a proprietary IDE or 3rd party packages. Delphi was great for me at the time, but that time is over.
 
 An interesting question is whether a transpiled source file maintains the original file’s copyright where I have used 3rd party code.
 
